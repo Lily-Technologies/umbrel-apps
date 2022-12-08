@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  lily-wallet:
+    privileged: true
+    restart: on-failure
+    volumes:
+      - ${APP_DATA_DIR}/config
+      - ${LND_DATA_DIR}/:/lnd:ro
+      - /dev/bus:/dev/bus:ro
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    environment:
+      - EXPRESS_PORT=8080
+      - ELECTRUM_IP=electrum1.bluewallet.io
+      - ELECTRUM_PORT=50001
+      - APP_PASSWORD=testtest
+      - APP_DATA_DIR=${APP_DATA_DIR}/data/lily-wallet:/data
+      - LND_IP=$LND_IP
+      - LND_GRPC_PORT=$LND_GRPC_PORT
+      - LND_WALLET_NAME='LND_WALLET_NAME'
+    ports:
+      - '42069:8080'
+    device_cgroup_rules:
+      - 'c 189:* rmw'
